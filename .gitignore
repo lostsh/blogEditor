@@ -1,0 +1,11 @@
+**/dist/
+**/build/
+
+**/core
+**/nbproject/*
+!**/nbproject/project.properties
+!**/nbproject/project.xml
+
+**out/
+**/*.iml
+*.class
