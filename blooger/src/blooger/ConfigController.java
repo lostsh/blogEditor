@@ -23,11 +23,14 @@ public class ConfigController implements Initializable {
     @FXML
     private Button buttonOK;
     @FXML
-    private TextField textFieldBlogPath;
+    private static TextField textFieldBlogPath;
     @FXML
-    private TextField textFieldTemplatePath;
+    private static TextField textFieldTemplatePath;
     
     private static boolean isOpen;
+    
+    private String blogPath;
+    private String templatePath;
     
     private static Editor parentEditor;
     
@@ -42,12 +45,14 @@ public class ConfigController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        textFieldBlogPath = new TextField();
+        textFieldTemplatePath = new TextField();
     }
     
     public void start(String blogPath, String template, Editor editor){
         ConfigController.parentEditor = editor;
-        if(!"".equals(blogPath)) textFieldBlogPath.setText(blogPath);
-        if(!"".equals(template)) textFieldTemplatePath.setText(template);
+        this.blogPath = blogPath;
+        this.templatePath = template;
         show();
     }
     public boolean displayed(){ return isOpen; }
@@ -66,6 +71,7 @@ public class ConfigController implements Initializable {
                 System.err.println("[!] Strange Exception about Config Windows");
             }
             stage.show();
+            setPathValues();
             isOpen = true;
         }
     }
@@ -80,5 +86,11 @@ public class ConfigController implements Initializable {
                 textFieldBlogPath.textProperty().get(),
                 textFieldTemplatePath.textProperty().get()
         );
+    }
+    
+    private void setPathValues(){
+        textFieldBlogPath.textProperty().set(blogPath);
+        textFieldTemplatePath.setText(templatePath);
+        System.out.println("========"+blogPath+" | "+templatePath);
     }
 }
