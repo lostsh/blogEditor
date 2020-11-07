@@ -1,5 +1,6 @@
-package blooger;
+package blooger.model;
 
+import blooger.controller.ConfigController;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,7 +50,7 @@ public class Editor {
                 if(line.contains("TemplatePath="))
                     templatePath=line.substring(line.indexOf("TemplatePath=")+13,line.length());
                 if(line.contains("IndexArticlesPath="))
-                    articlesIndexFile=line.substring(line.indexOf("IndexArticlesPath=")+18,line.length());
+                    templatePath=line.substring(line.indexOf("IndexArticlesPath=")+18,line.length());
             }
             br.close();
         } catch (FileNotFoundException ex) {
@@ -57,18 +58,8 @@ public class Editor {
         } catch (IOException ex) {
             System.err.println("[!] Config file reading exception");
         }
-        if("".equals(blogPath)||"".equals(templatePath)||"".equals(articlesIndexFile)){
+        if("".equals(blogPath)||"".equals(templatePath)){
             configDilog();
-        }
-        
-        //TESTTTTTTTTT==============================================================================
-        else{
-            System.out.format(
-                    "[ == ] Vars dump =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    blogPath, 
-                    templatePath, 
-                    articlesIndexFile
-            );
         }
     }
     
@@ -107,6 +98,19 @@ public class Editor {
     
     public void save(){
         currentArticle.exportArticle(templatePath);
+        
+        //on prend l'article courant
+        //si un article est charge
+        //et on le sauvegarde dans son fichier
+        
+        /*
+        String blogPath = textFieldBlogPath.textProperty().get();
+        
+        Article articel = new Article(blogPath, textFieldDate.textProperty().get(), textFieldTitle.textProperty().get());
+        articel.create();
+        articel.setArticle(textArea.textProperty().get());
+        
+        articel.exportArticle(blogPath.concat("/template.html"));*/
     }
     public void publish(){
         //on ajoute l'article au fichier d'indexe !
@@ -142,6 +146,17 @@ public class Editor {
         } catch (IOException ex) {
             System.err.println("[!] Error while reading articlesIndexFile ("+ex.getMessage()+")");
         }
+        
+        /*
+        for(File dayFolder : new File(blogPath).listFiles()){
+            if(dayFolder.isDirectory() && dayFolder.listFiles().length > 0){
+                for(File blogPost : dayFolder.listFiles()){
+                    Article article = new Article(blogPath, dayFolder.getName(), blogPost.getName().replace(".html", "")); 
+                    article.importContent(templatePath);
+                    articles.add(article);
+                }
+            }
+        }*/
     }
     
     public ArrayList<Article> articles(){ return articles; }

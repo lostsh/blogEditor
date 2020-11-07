@@ -19,8 +19,6 @@ public class Editor {
     private String blogPath;
     
     private String templatePath;
-    
-    private String articlesIndexFile;
         
     private ArrayList<Article> articles;
     
@@ -30,7 +28,6 @@ public class Editor {
         articles = new ArrayList<>();
         blogPath = "";
         templatePath = "";
-        articlesIndexFile = "";
     }
     
     public void start(){
@@ -48,8 +45,6 @@ public class Editor {
                     blogPath=line.substring(line.indexOf("BlogPath=")+9,line.length());
                 if(line.contains("TemplatePath="))
                     templatePath=line.substring(line.indexOf("TemplatePath=")+13,line.length());
-                if(line.contains("IndexArticlesPath="))
-                    articlesIndexFile=line.substring(line.indexOf("IndexArticlesPath=")+18,line.length());
             }
             br.close();
         } catch (FileNotFoundException ex) {
@@ -57,29 +52,18 @@ public class Editor {
         } catch (IOException ex) {
             System.err.println("[!] Config file reading exception");
         }
-        if("".equals(blogPath)||"".equals(templatePath)||"".equals(articlesIndexFile)){
+        if("".equals(blogPath)||"".equals(templatePath)){
             configDilog();
         }
-        
-        //TESTTTTTTTTT==============================================================================
-        else{
-            System.out.format(
-                    "[ == ] Vars dump =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    blogPath, 
-                    templatePath, 
-                    articlesIndexFile
-            );
-        }
     }
     
-    public void setBlogAndTemplateAndIndex(String blogPath, String templatePath, String indexArticles){
+    public void setBlogAndTemplate(String blogPath, String templatePath){
         this.blogPath = blogPath;
         this.templatePath = templatePath;
-        this.articlesIndexFile = indexArticles;
-        savePaths(blogPath, templatePath, articlesIndexFile);
+        savePaths(blogPath, templatePath);
     }
     
-    private void savePaths(String blogPath, String templatePath, String indexArticles) {
+    private void savePaths(String blogPath, String templatePath) {
         if (!"".equals(blogPath) && !"".equals(templatePath)) {
             File configFile = new File(confFile);
             try {
@@ -88,8 +72,6 @@ public class Editor {
                 wr.write(String.format("BlogPath=%s", blogPath));
                 wr.newLine();
                 wr.write(String.format("TemplatePath=%s", templatePath));
-                wr.newLine();
-                wr.write(String.format("IndexArticlesPath=%s", indexArticles));
                 wr.close();
             } catch (IOException ex) {
                 System.err.println("[!] Impossible de d'ecrire dans le fichier de configuration");
@@ -99,7 +81,7 @@ public class Editor {
     
     public void configDilog(){
         ConfigController confWindow = ConfigController.getControler();
-        confWindow.start(blogPath, templatePath, this, articlesIndexFile);
+        confWindow.start(blogPath, templatePath, this);
         if(!confWindow.displayed()){
             loadConfig();
         }
@@ -107,9 +89,21 @@ public class Editor {
     
     public void save(){
         currentArticle.exportArticle(templatePath);
+        
+        //on prend l'article courant
+        //si un article est charge
+        //et on le sauvegarde dans son fichier
+        
+        /*
+        String blogPath = textFieldBlogPath.textProperty().get();
+        
+        Article articel = new Article(blogPath, textFieldDate.textProperty().get(), textFieldTitle.textProperty().get());
+        articel.create();
+        articel.setArticle(textArea.textProperty().get());
+        
+        articel.exportArticle(blogPath.concat("/template.html"));*/
     }
     public void publish(){
-        //on ajoute l'article au fichier d'indexe !
         //on utilise la commande git pour publiser
     }
     public void newArticle(String date, String title){
@@ -124,23 +118,14 @@ public class Editor {
     }
     
     public void loadArticles(){
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(articlesIndexFile)));
-            String line;
-            while((line=br.readLine())!=null){
-                Article article = new Article(
-                        blogPath, 
-                        line.substring(0,line.indexOf("/")), 
-                        line.substring(line.indexOf("/")+1,line.length()).replace(".html", "")
-                ); 
-                article.importContent(templatePath);
-                articles.add(article);
+        for(File dayFolder : new File(blogPath).listFiles()){
+            if(dayFolder.isDirectory() && dayFolder.listFiles().length > 0){
+                for(File blogPost : dayFolder.listFiles()){
+                    Article article = new Article(blogPath, dayFolder.getName(), blogPost.getName().replace(".html", "")); 
+                    article.importContent(templatePath);
+                    articles.add(article);
+                }
             }
-            br.close();
-        } catch (FileNotFoundException ex) {
-            System.err.println("[!] File ["+articlesIndexFile+"] not found ("+ex.getLocalizedMessage()+")");
-        } catch (IOException ex) {
-            System.err.println("[!] Error while reading articlesIndexFile ("+ex.getMessage()+")");
         }
     }
     

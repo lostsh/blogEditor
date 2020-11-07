@@ -1,5 +1,6 @@
-package blooger;
+package blooger.controller;
 
+import blooger.model.Editor;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,21 +28,22 @@ public class ConfigController implements Initializable {
     @FXML
     private static TextField textFieldTemplatePath;
     @FXML
-    private static TextField textFieldarticlesIndexFilePath;
+    private TextField textFieldarticlesIndexFilePath;
     
     private static boolean isOpen;
     
-    private static String blogPath;
-    private static String templatePath;
-    private static String indexArticlesFilePath;
+    private String blogPath;
+    private String templatePath;
+    private String indexArticlesFilePath;
     
     private static Editor parentEditor;
     
-    private static final ConfigController confWindow = new ConfigController();
+    private static ConfigController confWindow = new ConfigController();
     
     public static ConfigController getControler(){
         return confWindow;
     }
+    //private ConfigController(){};
 
     /**
      * Initializes the controller class.
@@ -57,21 +59,9 @@ public class ConfigController implements Initializable {
     
     public void start(String blogPath, String template, Editor editor, String indexArticles){
         ConfigController.parentEditor = editor;
-        ConfigController.blogPath = blogPath;
-        ConfigController.templatePath = template;
-        ConfigController.indexArticlesFilePath = indexArticles;
-        System.out.format(
-                    "[ == ] Vars dump (ConfigController:Params) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    blogPath, 
-                    template, 
-                    indexArticles
-            );
-        System.out.format(
-                    "[ == ] Vars dump (ConfigController:this) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    ConfigController.blogPath, 
-                    ConfigController.templatePath, 
-                    ConfigController.indexArticlesFilePath
-            );
+        this.blogPath = blogPath;
+        this.templatePath = template;
+        this.indexArticlesFilePath = indexArticles;
         show();
     }
     public boolean displayed(){ return isOpen; }
@@ -80,7 +70,7 @@ public class ConfigController implements Initializable {
         if (!isOpen) {
             Stage stage = new Stage();
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("config.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/config.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
@@ -100,13 +90,6 @@ public class ConfigController implements Initializable {
         Stage stage = (Stage)buttonOK.getScene().getWindow();
         stage.close();
         
-        System.out.format(
-                    "[ == ] Vars dump (Editor:UpdateValues) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    ConfigController.blogPath, 
-                    ConfigController.templatePath, 
-                    ConfigController.indexArticlesFilePath
-            );
-        
         isOpen = false;
         parentEditor.setBlogAndTemplateAndIndex(
                 textFieldBlogPath.textProperty().get(),
@@ -115,10 +98,10 @@ public class ConfigController implements Initializable {
         );
     }
     
-    private static void setPathValues(){
+    private void setPathValues(){
         textFieldBlogPath.textProperty().set(blogPath);
         textFieldTemplatePath.setText(templatePath);
-        textFieldarticlesIndexFilePath.setText(indexArticlesFilePath);
+        //textFieldarticlesIndexFilePath.setText(indexArticlesFilePath);//THERE IS A NULL POINTER IDK WHY !!
         System.out.println("[*] Config ========["+blogPath+"] | ["+templatePath+"] | ["+indexArticlesFilePath+"]");
     }
 }

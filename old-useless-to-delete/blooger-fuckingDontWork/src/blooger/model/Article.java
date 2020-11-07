@@ -1,4 +1,4 @@
-package blooger;
+package blooger.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -88,14 +88,10 @@ public class Article {
             BufferedReader templateReader = new BufferedReader(new FileReader(new File(template)));
             BufferedWriter wr = new BufferedWriter(new FileWriter(articleFile));
             String templateLine;
-            while ((templateLine = templateReader.readLine()) != null) {
-                if (templateLine.contains("[ARTICLE]") || templateLine.contains("[TITLE]")) {
-                    if (templateLine.contains("[TITLE]")) {
-                        wr.write(templateLine.replace("[TITLE]", title));
-                    }else{
-                        wr.write(article);
-                    }
-                } else {
+            while((templateLine=templateReader.readLine())!=null){
+                if(templateLine.contains("[ARTICLE]")){
+                    wr.write(article);
+                }else{
                     wr.write(templateLine);
                 }
                 wr.newLine();
@@ -115,30 +111,19 @@ public class Article {
             BufferedReader articleReader = new BufferedReader(new FileReader(articleFile));
             String templateLine = templateReader.readLine();
             String articleFileLine;
-            
-            Boolean readingContent = false;
             while ((articleFileLine = articleReader.readLine()) != null) {
                 //System.out.println("___"+templateLine+"\n___"+articleFileLine);
                 //foreatch line on the artciel if this line is not in the template get it else read the folowing template line
-                /*
-                if (!articleFileLine.contains(templateLine) && !excludeSpaces(templateLine).equals("[ARTICLE]")) {
+                if (!excludeSpaces(articleFileLine).equals(excludeSpaces(templateLine)) && !excludeSpaces(templateLine).equals("[ARTICLE]")) {
                     if (articleFileLine.contains("<h3>")) {
                         int startTagIndex = articleFileLine.indexOf("<h3>");
                         title = articleFileLine.substring(startTagIndex + 4, articleFileLine.indexOf("</h3>"));
                     } else {
-                        article += null!=articleFileLine?articleFileLine+"\n":"\n";
+                        article += articleFileLine!=null?articleFileLine+"\n":"\n";
                     }
                 } else {
                     templateLine = templateReader.readLine();
-                }*/
-                
-                if(articleFileLine.contains("<section>") || articleFileLine.contains("</section>")){
-                    readingContent = !readingContent;
                 }
-                if(readingContent && !articleFileLine.contains("section")){
-                    article += null!=articleFileLine?articleFileLine+"\n":"\n";
-                } 
-                templateLine = templateReader.readLine();
             }
             templateReader.close();
             articleReader.close();
@@ -150,7 +135,7 @@ public class Article {
     }
     
     private String excludeSpaces(String line){
-        return line.replaceAll(" ", "");
+        return line.replaceAll(" ", "");//.replaceAll("\t", "");
     }
 
     @Override

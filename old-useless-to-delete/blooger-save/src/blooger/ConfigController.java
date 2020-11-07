@@ -26,18 +26,15 @@ public class ConfigController implements Initializable {
     private static TextField textFieldBlogPath;
     @FXML
     private static TextField textFieldTemplatePath;
-    @FXML
-    private static TextField textFieldarticlesIndexFilePath;
     
     private static boolean isOpen;
     
-    private static String blogPath;
-    private static String templatePath;
-    private static String indexArticlesFilePath;
+    private String blogPath;
+    private String templatePath;
     
     private static Editor parentEditor;
     
-    private static final ConfigController confWindow = new ConfigController();
+    private static ConfigController confWindow = new ConfigController();
     
     public static ConfigController getControler(){
         return confWindow;
@@ -45,33 +42,17 @@ public class ConfigController implements Initializable {
 
     /**
      * Initializes the controller class.
-     * @param url
-     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         textFieldBlogPath = new TextField();
         textFieldTemplatePath = new TextField();
-        textFieldarticlesIndexFilePath = new TextField();
     }
     
-    public void start(String blogPath, String template, Editor editor, String indexArticles){
+    public void start(String blogPath, String template, Editor editor){
         ConfigController.parentEditor = editor;
-        ConfigController.blogPath = blogPath;
-        ConfigController.templatePath = template;
-        ConfigController.indexArticlesFilePath = indexArticles;
-        System.out.format(
-                    "[ == ] Vars dump (ConfigController:Params) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    blogPath, 
-                    template, 
-                    indexArticles
-            );
-        System.out.format(
-                    "[ == ] Vars dump (ConfigController:this) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    ConfigController.blogPath, 
-                    ConfigController.templatePath, 
-                    ConfigController.indexArticlesFilePath
-            );
+        this.blogPath = blogPath;
+        this.templatePath = template;
         show();
     }
     public boolean displayed(){ return isOpen; }
@@ -100,25 +81,16 @@ public class ConfigController implements Initializable {
         Stage stage = (Stage)buttonOK.getScene().getWindow();
         stage.close();
         
-        System.out.format(
-                    "[ == ] Vars dump (Editor:UpdateValues) =>\n\tBlog Path :[%s]\n\tTemplate Path :[%s]\n\tArticles Index :[%s]\n", 
-                    ConfigController.blogPath, 
-                    ConfigController.templatePath, 
-                    ConfigController.indexArticlesFilePath
-            );
-        
         isOpen = false;
-        parentEditor.setBlogAndTemplateAndIndex(
+        parentEditor.setBlogAndTemplate(
                 textFieldBlogPath.textProperty().get(),
-                textFieldTemplatePath.textProperty().get(),
-                textFieldarticlesIndexFilePath.textProperty().get()
+                textFieldTemplatePath.textProperty().get()
         );
     }
     
-    private static void setPathValues(){
+    private void setPathValues(){
         textFieldBlogPath.textProperty().set(blogPath);
         textFieldTemplatePath.setText(templatePath);
-        textFieldarticlesIndexFilePath.setText(indexArticlesFilePath);
-        System.out.println("[*] Config ========["+blogPath+"] | ["+templatePath+"] | ["+indexArticlesFilePath+"]");
+        System.out.println("========"+blogPath+" | "+templatePath);
     }
 }

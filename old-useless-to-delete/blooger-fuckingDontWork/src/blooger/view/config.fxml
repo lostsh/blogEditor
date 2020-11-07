@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="144.0" minWidth="300.0" prefHeight="188.0" prefWidth="387.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blooger.ConfigController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="144.0" minWidth="300.0" prefHeight="188.0" prefWidth="387.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blooger.controller.ConfigController">
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
